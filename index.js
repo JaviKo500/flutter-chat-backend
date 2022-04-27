@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 require('dotenv').config();
 
 // db config
@@ -7,6 +8,9 @@ require('./database/config').dbConnection();
 
 // App de Express
 const app = express();
+
+// configurar cors
+app.use(cors());
 
 // read and parse body
 app.use( express.json() );
