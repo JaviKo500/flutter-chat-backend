@@ -23,6 +23,25 @@ const getUsers = async ( req, res = response) => {
     }
 };
 
+const getUser = async ( req, res = response ) => {
+    const uid = req.params.uid;
+    try {
+        const user = await User.findById(uid);
+        return res.status(200).json({
+            ok: true,
+            msg: 'user',
+            user
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Talk to the admin'
+        });
+    }
+};
+
 module.exports = {
-    getUsers
+    getUsers,
+    getUser
 };

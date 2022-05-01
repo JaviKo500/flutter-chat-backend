@@ -14,19 +14,26 @@ bands.addBand( new Band( 'Metallica' ) );
 
 
 // Mensajes de Sockets
-io.on('connection', client => {
-    const [valid, uid] = checkJWT(client.handshake.headers['x-token']);
+io.on('connection',  (client) => {
+    let token = client.handshake.query['x-token'] || client.handshake.headers['x-token'];
+    const [valid, uid] = checkJWT( token );
     if ( !valid ) {
         return client.disconnect();
     }
     console.log('Cliente conectado');
     console.log(valid, uid);
-    // client authtetificated
-    userConnect(uid);   
+      
     // enter user a sale
     // globa sale
     // client.id 
     client.join(uid);
+
+    // listen cliente connect
+    client.on('user-connect', async() => {
+        // client authtetificated
+        await userConnect(uid); 
+        io.emit('user-connect');
+    });
     // listen client personal-message
     client.on('personal-message', async (payload) => {
         console.log(payload);
@@ -36,6 +43,6 @@ io.on('connection', client => {
     });
     client.on('disconnect', () => {
         userDisconnect(uid);
-        console.log('Cliente desconectado');
+        console.log('Cliente desconectado',uid);
     });
 });
